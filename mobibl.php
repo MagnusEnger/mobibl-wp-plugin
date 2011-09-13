@@ -45,7 +45,7 @@ class mobiblsearch_Widget extends WP_Widget {
 		echo $before_widget;
 		if ( $title )
 			echo $before_title . $title . $after_title; ?>
-		<form method="get" action="/glitre/api/index.php" id="bib-search">
+		<form method="get" action="/wp-content/plugins/mobibl-wp-plugin/glitre-proxy.php" id="bib-search">
     <input type="search" name="q" id="search" value="" placeholder="<?php echo($placeholder); ?>" />
 		<input type="hidden" name="library" value="<?php echo($library); ?>" />
     <input type="hidden" name="sort_by" value="year" />
