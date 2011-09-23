@@ -155,5 +155,59 @@ class mobiblnews_Widget extends WP_Widget {
 // register widget
 add_action( 'widgets_init', create_function( '', 'return register_widget("mobiblnews_Widget");' ) );
 
+/**
+ * mobiblpages_Widget Class
+ */
+class mobiblpages_Widget extends WP_Widget {
+	/** constructor */
+	function mobiblpages_Widget() {
+	  $widget_ops = array('classname' => 'widget_mobiblpages', 'description' => __( 'Displays pages as a menu, in the order you have decided.', 'mobiblpages') );
+		parent::WP_Widget( 'mobiblpages_widget', $name = 'moBibl Pages', $widget_ops );
+	}
+
+	/** @see WP_Widget::widget */
+	function widget( $args, $instance ) {
+		extract( $args );
+		# Get parameters
+		$title = apply_filters( 'widget_title', $instance['title'] );
+		echo $before_widget;
+		if ( $title ) {
+			echo $before_title . $title . $after_title; 
+	  }
+	  # Get the menu, replace the default <ul> 
+	  $mobibl_menu = wp_page_menu(array('echo' => false));
+	  echo(str_replace('<ul', '<ul data-theme="c" data-inset="true" data-role="listview" ', $mobibl_menu));
+    echo $after_widget;
+	}
+
+	/** @see WP_Widget::update */
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$instance['title']       = strip_tags($new_instance['title']);
+		return $instance;
+	}
+
+	/** @see WP_Widget::form */
+	function form( $instance ) {
+		if ( $instance ) {
+	 		//Defaults
+  		$instance = wp_parse_args( (array) $instance, array( 'title' => 'Search the catalogue', 'placeholder' => 'emne/tittel/forfatter', 'library' => 'demo') );
+			$title       = esc_attr( $instance[ 'title' ] );
+		}
+		else {
+			$title = __( 'New title', 'text_domain' );
+		}
+		?>
+		<p>
+		<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> 
+		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
+		</p>
+		<?php 
+	}
+
+} 
+
+// register widget
+add_action( 'widgets_init', create_function( '', 'return register_widget("mobiblpages_Widget");' ) );
 
 ?>
