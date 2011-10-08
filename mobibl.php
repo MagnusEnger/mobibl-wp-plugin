@@ -528,6 +528,109 @@ function mobibl_widget_rss_process( $widget_rss, $check_feed = true ) {
 add_action( 'widgets_init', create_function( '', 'return register_widget("mobiblrss_Widget");' ) );
 
 // -------------------------------------------------------------------
+// moBibl links widget 
+
+class mobibllinks_Widget extends WP_Widget {
+
+	function __construct() {
+		$widget_ops = array('description' => __( "Vis lenker" ) );
+		parent::__construct('links', __('moBibl Links'), $widget_ops);
+	}
+
+	function widget( $args, $instance ) {
+		extract($args, EXTR_SKIP);
+
+		$show_description = isset($instance['description']) ? $instance['description'] : false;
+		$show_name = isset($instance['name']) ? $instance['name'] : false;
+		$show_rating = isset($instance['rating']) ? $instance['rating'] : false;
+		$show_images = isset($instance['images']) ? $instance['images'] : true;
+		$category = isset($instance['category']) ? $instance['category'] : false;
+
+		if ( is_admin() && !$category ) {
+			// Display All Links widget as such in the widgets screen
+			echo $before_widget . $before_title. __('All Links') . $after_title . $after_widget;
+			return;
+		}
+
+    $defaults = array(
+		  'orderby' => 'name', 'order' => 'ASC',
+		  'limit' => -1, 'category' => '', 'exclude_category' => '',
+		  'category_name' => '', 'hide_invisible' => 1,
+		  'show_updated' => 0, 'echo' => 1,
+		  'categorize' => 1, 'title_li' => __('Lenker'),
+		  'title_before' => '<h2>', 'title_after' => '</h2>',
+		  'category_orderby' => 'name', 'category_order' => 'ASC',
+		  'class' => 'linkcat', 'category_before' => '',
+		  'category_after' => ''
+	  );
+
+	  $r = wp_parse_args( $args, $defaults );
+	  extract( $r, EXTR_SKIP );
+
+	  $output = '';
+
+	  //output one single list using title_li for the title
+	  $bookmarks = get_bookmarks($r);
+
+	  if ( !empty($bookmarks) ) {
+		  $output .= str_replace(array('%id', '%class'), array("linkcat-$category", $class), $category_before);
+		  $output .= "$title_before$title_li$title_after\n" . '<ul data-role="listview" data-inset="true" data-theme="c">' . "\n";
+		  $output .= _walk_bookmarks($bookmarks, $r);
+		  $output .= "\n</ul>\n$category_after\n";
+	  }
+
+	  $output = apply_filters( 'wp_list_bookmarks', $output );
+	  echo($output);
+	}
+
+	function update( $new_instance, $old_instance ) {
+		$new_instance = (array) $new_instance;
+		$instance = array( 'images' => 0, 'name' => 0, 'description' => 0, 'rating' => 0);
+		foreach ( $instance as $field => $val ) {
+			if ( isset($new_instance[$field]) )
+				$instance[$field] = 1;
+		}
+		$instance['category'] = intval($new_instance['category']);
+
+		return $instance;
+	}
+
+	function form( $instance ) {
+
+		//Defaults
+		$instance = wp_parse_args( (array) $instance, array( 'images' => true, 'name' => true, 'description' => false, 'rating' => false, 'category' => false ) );
+		$link_cats = get_terms( 'link_category');
+?>
+		<p>
+		<label for="<?php echo $this->get_field_id('category'); ?>" class="screen-reader-text"><?php _e('Select Link Category'); ?></label>
+		<select class="widefat" id="<?php echo $this->get_field_id('category'); ?>" name="<?php echo $this->get_field_name('category'); ?>">
+		<option value=""><?php _e('All Links'); ?></option>
+		<?php
+		foreach ( $link_cats as $link_cat ) {
+			echo '<option value="' . intval($link_cat->term_id) . '"'
+				. ( $link_cat->term_id == $instance['category'] ? ' selected="selected"' : '' )
+				. '>' . $link_cat->name . "</option>\n";
+		}
+		?>
+		</select></p>
+		<p>
+		<input class="checkbox" type="checkbox" <?php checked($instance['images'], true) ?> id="<?php echo $this->get_field_id('images'); ?>" name="<?php echo $this->get_field_name('images'); ?>" />
+		<label for="<?php echo $this->get_field_id('images'); ?>"><?php _e('Show Link Image'); ?></label><br />
+		<input class="checkbox" type="checkbox" <?php checked($instance['name'], true) ?> id="<?php echo $this->get_field_id('name'); ?>" name="<?php echo $this->get_field_name('name'); ?>" />
+		<label for="<?php echo $this->get_field_id('name'); ?>"><?php _e('Show Link Name'); ?></label><br />
+		<input class="checkbox" type="checkbox" <?php checked($instance['description'], true) ?> id="<?php echo $this->get_field_id('description'); ?>" name="<?php echo $this->get_field_name('description'); ?>" />
+		<label for="<?php echo $this->get_field_id('description'); ?>"><?php _e('Show Link Description'); ?></label><br />
+		<input class="checkbox" type="checkbox" <?php checked($instance['rating'], true) ?> id="<?php echo $this->get_field_id('rating'); ?>" name="<?php echo $this->get_field_name('rating'); ?>" />
+		<label for="<?php echo $this->get_field_id('rating'); ?>"><?php _e('Show Link Rating'); ?></label>
+		</p>
+<?php
+	}
+}
+
+// register widget
+add_action( 'widgets_init', create_function( '', 'return register_widget("mobibllinks_Widget");' ) );
+
+// -------------------------------------------------------------------
 // moBibl Dashboard widget
 
 function mobibl_dashboard_widget_function() {
