@@ -210,4 +210,22 @@ class mobiblpages_Widget extends WP_Widget {
 // register widget
 add_action( 'widgets_init', create_function( '', 'return register_widget("mobiblpages_Widget");' ) );
 
+// -------------------------------------------------------------------
+// moBibl Dashboard widget
+
+function mobibl_dashboard_widget_function() {
+	// Display whatever it is you want to show
+	echo "Hello World, I'm the great moBibl Dashboard Widget";
+} 
+
+// Create the function use in the action hook
+
+function mobibl_add_dashboard_widgets() {
+	wp_add_dashboard_widget('mobibl_dashboard_widget', 'moBibl Dashboard Widget', 'mobibl_dashboard_widget_function');	
+} 
+
+// Hook into the 'wp_dashboard_setup' action to register our other functions
+
+add_action('wp_dashboard_setup', 'mobibl_add_dashboard_widgets' );
+
 ?>
