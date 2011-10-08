@@ -219,7 +219,7 @@ class mobiblrss_Widget extends WP_Widget {
 	function __construct() {
 		$widget_ops = array( 'description' => __('Vis nyheter fra en RSS-strøm.') );
 		$control_ops = array( 'width' => 400, 'height' => 200 );
-		parent::__construct( 'rss', __('RSS'), $widget_ops, $control_ops );
+		parent::__construct( 'rss', __('moBibl RSS'), $widget_ops, $control_ops );
 	}
 
 	function widget($args, $instance) {
