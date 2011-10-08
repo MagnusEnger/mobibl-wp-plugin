@@ -553,14 +553,23 @@ class mobibllinks_Widget extends WP_Widget {
 		}
 
     $defaults = array(
-		  'orderby' => 'name', 'order' => 'ASC',
-		  'limit' => -1, 'category' => '', 'exclude_category' => '',
-		  'category_name' => '', 'hide_invisible' => 1,
-		  'show_updated' => 0, 'echo' => 1,
-		  'categorize' => 1, 'title_li' => __('Lenker'),
-		  'title_before' => '<h2>', 'title_after' => '</h2>',
-		  'category_orderby' => 'name', 'category_order' => 'ASC',
-		  'class' => 'linkcat', 'category_before' => '',
+		  'orderby' => 'name', 
+		  'order' => 'ASC',
+		  'limit' => -1, 
+		  'category' => $category, 
+		  'exclude_category' => '',
+		  'category_name' => '', 
+		  'hide_invisible' => 1,
+		  'show_updated' => 0, 
+		  'echo' => 1,
+		  'categorize' => 1, 
+		  'title_li' => __('Lenker'),
+		  'title_before' => '<h2>', 
+		  'title_after' => '</h2>',
+		  'category_orderby' => 'name', 
+		  'category_order' => 'ASC',
+		  'class' => 'linkcat', 
+		  'category_before' => '',
 		  'category_after' => ''
 	  );
 
