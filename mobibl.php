@@ -45,6 +45,10 @@ function remove_default_widgets() {
 	  unregister_widget('WP_Widget_RSS');
 	  unregister_widget('WP_Widget_Tag_Cloud');
 	  unregister_widget('WP_Nav_Menu_Widget');
+	  // Disable the widget from the My Page Order plugin
+	  // FIXME Doesn't work! This is probably called here before the 
+	  // plugin has registered it's widget? 
+	  unregister_widget('mypageorder_Widget');
   }
 }
 
