@@ -643,14 +643,19 @@ add_action( 'widgets_init', create_function( '', 'return register_widget("mobibl
 // moBibl Dashboard widget
 
 function mobibl_dashboard_widget_function() {
-	// Display whatever it is you want to show
-	echo "Hello World, I'm the great moBibl Dashboard Widget";
+	?>
+<p><a style="font-weight: bold;" href="/wp-admin/edit.php">Nyheter</a> - <a href="/wp-admin/post-new.php">Legg til nyhet</a></p>
+<p><a style="font-weight: bold;" href="/wp-admin/edit.php?post_type=page">Sider</a> - <a href="/wp-admin/post-new.php?post_type=page">Legg til ny side</a> - Du kan endre rekkefølgen på sider ved hjelp av <a href="/wp-admin/edit.php?post_type=page&page=mypageorder">My Page Order</a>.</p>
+<p><a style="font-weight: bold;" href="/wp-admin/link-manager.php">Lenker</a> - <a href="/wp-admin/link-add.php">Legg til ny lenke</a></p>
+<p><a style="font-weight: bold;" href="/wp-admin/widgets.php">Widgets</a> - Bestemmer hva som skal vises på forsiden, og i hvilken rekkefølge. Nyheter fra RSS-strømmer kan legges til ved hjelp av widgeten "moBibl RSS".</p>
+<p><a style="font-weight: bold;" href=""></a></p>
+	<?php
 } 
 
 // Create the function use in the action hook
 
 function mobibl_add_dashboard_widgets() {
-	wp_add_dashboard_widget('mobibl_dashboard_widget', 'moBibl Dashboard Widget', 'mobibl_dashboard_widget_function');	
+	wp_add_dashboard_widget('mobibl_dashboard_widget', 'moBibl snarveier', 'mobibl_dashboard_widget_function');	
 } 
 
 // Hook into the 'wp_dashboard_setup' action to register our other functions
