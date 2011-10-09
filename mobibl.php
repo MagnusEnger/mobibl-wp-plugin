@@ -156,6 +156,56 @@ class mobiblnews_Widget extends WP_Widget {
 add_action( 'widgets_init', create_function( '', 'return register_widget("mobiblnews_Widget");' ) );
 
 // -------------------------------------------------------------------
+// moBibl image widget
+
+class mobiblimage_Widget extends WP_Widget {
+	/** constructor */
+	function mobiblimage_Widget() {
+	  $widget_ops = array('classname' => 'widget_mobiblimage', 'description' => __( 'Displays an image.', 'mobiblimage') );
+		parent::WP_Widget( 'mobiblimage_widget', $name = 'moBibl Image', $widget_ops );
+	}
+
+	/** @see WP_Widget::widget */
+	function widget( $args, $instance ) {
+		extract( $args );
+		$image_url = $instance['image_url'];
+		echo $before_widget;
+		echo '<div style="text-align: center;"><img src="' . $image_url . '" /></div>';
+		echo $after_widget;
+	}
+
+	/** @see WP_Widget::update */
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$instance['image_url'] = strip_tags($new_instance['image_url']);
+		return $instance;
+	}
+
+	/** @see WP_Widget::form */
+	function form( $instance ) {
+		if ( $instance ) {
+	 		//Defaults
+  		$instance = wp_parse_args( (array) $instance, array( 'image_url' => '') );
+			$image_url = esc_attr( $instance[ 'image_url' ] );
+		}
+		else {
+			$image_url = __( '', 'text_domain' );
+		}
+		?>
+		<p>
+		<label for="<?php echo $this->get_field_id('image_url'); ?>"><?php _e('Bilde-URL:'); ?></label> 
+		<input class="widefat" id="<?php echo $this->get_field_id('image_url'); ?>" name="<?php echo $this->get_field_name('image_url'); ?>" type="text" value="<?php echo $image_url; ?>" />
+		<small>(Du kan kopiere URLen fra <a href="/wp-admin/upload.php">Mediebiblioteket</a>.)</small>
+		</p>
+		<?php 
+	}
+
+} 
+
+// register 
+add_action( 'widgets_init', create_function( '', 'return register_widget("mobiblimage_Widget");' ) );
+
+// -------------------------------------------------------------------
 // moBibl pages widget
 
 class mobiblpages_Widget extends WP_Widget {
@@ -539,7 +589,7 @@ class mobibllinks_Widget extends WP_Widget {
 
 	function widget( $args, $instance ) {
 		extract($args, EXTR_SKIP);
-
+        
 		$show_description = isset($instance['description']) ? $instance['description'] : false;
 		$show_name = isset($instance['name']) ? $instance['name'] : false;
 		$show_rating = isset($instance['rating']) ? $instance['rating'] : false;
@@ -627,10 +677,12 @@ class mobibllinks_Widget extends WP_Widget {
 		<label for="<?php echo $this->get_field_id('images'); ?>"><?php _e('Show Link Image'); ?></label><br />
 		<input class="checkbox" type="checkbox" <?php checked($instance['name'], true) ?> id="<?php echo $this->get_field_id('name'); ?>" name="<?php echo $this->get_field_name('name'); ?>" />
 		<label for="<?php echo $this->get_field_id('name'); ?>"><?php _e('Show Link Name'); ?></label><br />
+		<!--
 		<input class="checkbox" type="checkbox" <?php checked($instance['description'], true) ?> id="<?php echo $this->get_field_id('description'); ?>" name="<?php echo $this->get_field_name('description'); ?>" />
 		<label for="<?php echo $this->get_field_id('description'); ?>"><?php _e('Show Link Description'); ?></label><br />
 		<input class="checkbox" type="checkbox" <?php checked($instance['rating'], true) ?> id="<?php echo $this->get_field_id('rating'); ?>" name="<?php echo $this->get_field_name('rating'); ?>" />
 		<label for="<?php echo $this->get_field_id('rating'); ?>"><?php _e('Show Link Rating'); ?></label>
+	  -->
 		</p>
 <?php
 	}
