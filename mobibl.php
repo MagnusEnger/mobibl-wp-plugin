@@ -358,7 +358,7 @@ class mobiblrss_Widget extends WP_Widget {
 	function form($instance) {
 
 		if ( empty($instance) )
-			$instance = array( 'title' => '', 'url' => '', 'items' => 10, 'error' => false, 'show_summary' => 0, 'show_author' => 0, 'show_date' => 0 );
+			$instance = array( 'title' => '', 'url' => '', 'items' => 10, 'error' => false, 'show_summary' => 0, 'show_author' => 0, 'show_date' => 0, 'display' => '' );
 		$instance['number'] = $this->number;
 
 		mobibl_widget_rss_form( $instance );
@@ -501,7 +501,7 @@ function mobibl_widget_rss_output( $rss, $args = array() ) {
  */
 function mobibl_widget_rss_form( $args, $inputs = null ) {
 
-	$default_inputs = array( 'url' => true, 'title' => true, 'items' => true, 'show_summary' => true, 'show_author' => true, 'show_date' => true );
+	$default_inputs = array( 'url' => true, 'title' => true, 'items' => true, 'show_summary' => true, 'show_author' => true, 'show_date' => true, 'display' => 'acc' );
 	$inputs = wp_parse_args( $inputs, $default_inputs );
 	extract( $args );
 	extract( $inputs, EXTR_SKIP);
@@ -515,6 +515,7 @@ function mobibl_widget_rss_form( $args, $inputs = null ) {
 	$show_summary   = (int) $show_summary;
 	$show_author    = (int) $show_author;
 	$show_date      = (int) $show_date;
+	$display = esc_attr( $display );
 
 	if ( !empty($error) )
 		echo '<p class="widget-error"><strong>' . sprintf( __('RSS Error: %s'), $error) . '</strong></p>';
@@ -543,6 +544,11 @@ function mobibl_widget_rss_form( $args, $inputs = null ) {
 <?php endif; if ( $inputs['show_date'] ) : ?>
 	<p><input id="rss-show-date-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][show_date]" type="checkbox" value="1" <?php if ( $show_date ) echo 'checked="checked"'; ?>/>
 	<label for="rss-show-date-<?php echo $number; ?>"><?php _e('Display item date?'); ?></label></p>
+	<p><label for="rss-display-<?php echo $number; ?>"><?php _e('Stil'); echo($display) ?></label>
+	<select id="rss-display-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][display]">
+  <option value='acc' <?php if ( $display == 'acc') { echo('selected="selected"'); } ?>>Trekkspill</option>
+  <option value='pop' <?php if ( $display == 'pop') { echo('selected="selected"'); } ?>>Pop-up</option>
+	</select></p>
 <?php
 	endif;
 	foreach ( array_keys($default_inputs) as $input ) :
@@ -580,6 +586,7 @@ function mobibl_widget_rss_process( $widget_rss, $check_feed = true ) {
 	$show_summary  = isset($widget_rss['show_summary']) ? (int) $widget_rss['show_summary'] : 0;
 	$show_author   = isset($widget_rss['show_author']) ? (int) $widget_rss['show_author'] :0;
 	$show_date     = isset($widget_rss['show_date']) ? (int) $widget_rss['show_date'] : 0;
+	$display       = isset($widget_rss['display']) ? (int) $widget_rss['display'] : 'acc';
 
 	if ( $check_feed ) {
 		$rss = fetch_feed($url);
@@ -597,7 +604,7 @@ function mobibl_widget_rss_process( $widget_rss, $check_feed = true ) {
 		}
 	}
 
-	return compact( 'title', 'url', 'link', 'items', 'error', 'show_summary', 'show_author', 'show_date' );
+	return compact( 'title', 'url', 'link', 'items', 'error', 'show_summary', 'show_author', 'show_date', 'display' );
 }
 
 // register widget
@@ -739,5 +746,20 @@ function mobibl_add_dashboard_widgets() {
 // Hook into the 'wp_dashboard_setup' action to register our other functions
 
 add_action('wp_dashboard_setup', 'mobibl_add_dashboard_widgets' );
+
+// -------------------------------------------------------------------
+// Remove some of the default dashboard widgets
+// http://codex.wordpress.org/Dashboard_Widgets_API#Advanced:_Removing_Dashboard_Widgets
+
+function example_remove_dashboard_widgets() {
+	remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
+	remove_meta_box( 'dashboard_secondary', 'dashboard', 'side' );
+	remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
+	remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
+} 
+
+// Hoook into the 'wp_dashboard_setup' action to register our function
+
+add_action('wp_dashboard_setup', 'example_remove_dashboard_widgets' );
 
 ?>
